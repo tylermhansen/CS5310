@@ -60,6 +60,9 @@ all:
 ppmtest: $(ODIR)/ppmmain.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
+lab1: $(ODIR)/lab1.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
 .PHONY: clean
 
 clean:
