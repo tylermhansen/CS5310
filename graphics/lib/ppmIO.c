@@ -10,9 +10,9 @@
 #define USECPP 0
 
 // read in rgb values from the ppm file output by cqcam
-Pixel *readPPM(int *rows, int *cols, int * colors, char *filename) {
+FPixel *readPPM(int *rows, int *cols, int * colors, char *filename) {
    char tag[40];
-   Pixel *image;
+   FPixel *image;
    FILE *fp;
    int read, num[3], curchar;
 
@@ -56,11 +56,11 @@ Pixel *readPPM(int *rows, int *cols, int * colors, char *filename) {
 #if USECPP
        image = new Pixel[(*rows) * (*cols)];
 #else
-       image = (Pixel *)malloc(sizeof(Pixel)* (*rows) * (*cols));
+       image = (FPixel *)malloc(sizeof(FPixel)* (*rows) * (*cols));
 #endif
        if(image) {
 	 // Read the data
-	 fread(image, sizeof(Pixel), (*rows) * (*cols), fp);
+	 fread(image, sizeof(FPixel), (*rows) * (*cols), fp);
 
 	 if(fp != stdin)
 	   fclose(fp);
@@ -79,7 +79,7 @@ Pixel *readPPM(int *rows, int *cols, int * colors, char *filename) {
 
 // Write the modified image out as a ppm in the correct format to be read by 
 // read_ppm.  xv will read these properly.
-void writePPM(Pixel *image, int rows, int cols, int colors, char *filename)
+void writePPM(FPixel *image, int rows, int cols, int colors, char *filename)
 {
   FILE *fp;
 
@@ -92,7 +92,7 @@ void writePPM(Pixel *image, int rows, int cols, int colors, char *filename)
     fprintf(fp, "P6\n");
     fprintf(fp, "%d %d\n%d\n", cols, rows, colors);
 
-    fwrite(image, sizeof(Pixel), rows * cols, fp);
+    fwrite(image, sizeof(FPixel), rows * cols, fp);
   }
 
   fclose(fp);

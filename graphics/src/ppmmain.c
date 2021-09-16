@@ -12,7 +12,7 @@
 #define USECPP 0
 
 int main(int argc, char *argv[]) {
-  Pixel *image;
+  FPixel *image;
   int rows, cols, colors;
   long imagesize;
   long i, j;
@@ -39,17 +39,17 @@ int main(int argc, char *argv[]) {
     // this little piece of code thresholds out very red pixels
     // the resulting image will be very red where there is red stuff
     // and greyscale elsewhere
-    j = (int)image[i].r - ((int)image[i].g + (int)image[i].b) / 2;
-    min = image[i].g < image[i].b ? image[i].g : image[i].b;
-    min = image[i].r < min ? image[i].r : min;
+    j = (int)image[i].rgb[0] - ((int)image[i].rgb[1] + (int)image[i].rgb[2]) / 2;
+    min = image[i].rgb[1]< image[i].rgb[2] ? image[i].rgb[1] : image[i].rgb[2];
+    min = image[i].rgb[0] < min ? image[i].rgb[0] : min;
     min = min < 128 ? min : min/2;
     if(j > 10) {
-      image[i].r = image[i].r < 128 ? image[i].r*2 : image[i].r;
+      image[i].rgb[0] = image[i].rgb[0] < 128 ? image[i].rgb[0]*2 : image[i].rgb[0];
     }
     else {
-      image[i].r = min;
+      image[i].rgb[0] = min;
     }
-    image[i].g = image[i].b = min;
+    image[i].rgb[1] = image[i].rgb[2] = min;
   }
 
   /* write out the resulting image */
