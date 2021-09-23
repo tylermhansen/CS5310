@@ -31,7 +31,7 @@ Image *image_create(int rows, int cols)
     src->cols = 0;
     if(image_alloc(src, rows, cols) != 0)
     {
-        printf("image_alloc returned 0");
+        printf("image_alloc returned 0\n");
         return NULL;
     }
     return src;
@@ -45,7 +45,9 @@ void image_free(Image *src)
     free(src->data);
     free(src->alpha);
     free(src->depth);
+    printf("Freed the members.\n");
     free(src);
+    printf("Freed src.\n");
 }
 
 void image_init(Image *src)
@@ -66,23 +68,27 @@ int image_alloc(Image *src, int rows, int cols)
     value if the operation fails. This function frees existing memory if rows and cols are both non-zero.
     */
     printf("Allocating Image...\n");
-    if(src->rows != 0 && src->cols != 0)
+    if(src->rows != 0 && src->cols != 0) // This line is the culprit for a segfault at the moment.
     {
+        printf("Got into conditional somehow...\n");
         free(src->data);
         free(src->alpha);
         free(src->depth);
     }
+    printf("Got thru conditional...\n");
     src->rows = rows;
     src->cols = cols;
-
+    printf("Set rows and cols...\n");
     src->data = malloc(sizeof(FPixel) * (rows * cols));
     src->alpha = malloc(sizeof(float*) * (rows * cols));
     src->depth = malloc(sizeof(float*) * (rows * cols));
-
+    printf("malloc'd vars...\n");
     image_fillrgb(src, 0, 0, 0);
+    printf("filled rgb...\n");
     image_filla(src, 1.0);
     image_fillz(src, 1.0);
-
+    printf("filled a and z...\n");
+    
     if ((!src->data || !src->alpha || !src->depth) && (rows && cols))
     {
         printf("image_alloc failed to allocate space for an image.");
@@ -151,6 +157,13 @@ int image_write(Image *src, char *filename)
 }
 
 // Utility:
+
+void image_reset(Image *src)
+{
+    image_fillrgb(src, 0, 0, 0);
+    image_filla(src, 1.0);
+    image_fillz(src, 1.0);
+}
 
 void image_fillrgb(Image *src, float r, float g, float b)
 {

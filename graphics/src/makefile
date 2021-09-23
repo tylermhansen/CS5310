@@ -32,10 +32,10 @@ _DEPS = ppmIO.h Image.h Pixel.h
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of the executables here
-EXECUTABLES = ppmtest lab1 createmask mergeimages
+EXECUTABLES = ppmtest lab1 createmask mergeimages imagetest
 
 # put a list of all the object files here for all executables (with .o endings)
-_OBJ = tiffmain.o ppmmain.o lab1.o createmask.o mergeimages.o
+_OBJ = tiffmain.o ppmmain.o lab1.o createmask.o mergeimages.o imagetest.o
 
 # convert them to point to the right place
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -67,6 +67,9 @@ createmask: $(ODIR)/createmask.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 mergeimages: $(ODIR)/mergeimages.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+imagetest: $(ODIR)/imagetest.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 .PHONY: clean
