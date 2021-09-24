@@ -17,8 +17,6 @@ int main(int argc, char *argv[]) {
   // initialize an image
   src = image_create(rows, cols);
 
-  printf("Image created, filling with colors:\n");
-
   // fill it with colors
   for(i=0;i<rows;i++) {
     for(j=0;j<cols;j++) {
@@ -28,17 +26,11 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  printf("Filled with colors, now writing:\n");
-
   // write it out
   image_write( src, "colors.ppm");
 
-  printf("Written, now freeing:\n");
-
   // free it
   image_free( src );
-
-  printf("Freed, now creating:\n");
 
   src = image_create(0, 0);
   rows = 400;
