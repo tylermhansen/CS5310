@@ -10,6 +10,7 @@
 #define FRACTALS_H
 
 #include <stdio.h>
+#include <math.h>
 #include "Image.h"
 
 #define MAX_ITERS 255
@@ -29,6 +30,18 @@ inline int get_julia_iters(float zx, float zy, float cx, float cy) {
   }
   return n;
 }
+
+int noise2(int x, int y);
+
+double lin_interpolation(double x, double y, double s);
+
+double smooth_interpolation(double x, double y, double s);
+
+double noise2d(double x, double y);
+
+double perlin2d(double x, double y, double freq, int depth);
+
+void perlin_image(Image *dst, double freq, int depth);
 
 void mandelbrot(Image *dst, float x0, float y0, float rad);
 
