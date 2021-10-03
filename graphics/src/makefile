@@ -26,16 +26,16 @@ LIBS = -lm -limageIO
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h Image.h Pixel.h
+_DEPS = ppmIO.h Image.h Pixel.h Color.h Primitives.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of the executables here
-EXECUTABLES = ppmtest lab1 createmask mergeimages imagetest mandeltest julia mandelbrot
+EXECUTABLES = ppmtest lab1 createmask mergeimages imagetest mandeltest julia mandelbrot test3d
 
 # put a list of all the object files here for all executables (with .o endings)
-_OBJ = tiffmain.o ppmmain.o lab1.o createmask.o mergeimages.o imagetest.o mandeltest.o julia.o mandelbrot.o
+_OBJ = tiffmain.o ppmmain.o lab1.o createmask.o mergeimages.o imagetest.o mandeltest.o julia.o mandelbrot.o test3d.o
 
 # convert them to point to the right place
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
@@ -79,6 +79,9 @@ julia: $(ODIR)/julia.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 mandelbrot: $(ODIR)/mandelbrot.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test3d: $(ODIR)/test3d.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 

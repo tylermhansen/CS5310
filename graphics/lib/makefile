@@ -28,13 +28,13 @@ LIBDIR =.
 BINDIR =../bin
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h Pixel.h Image.h Fractals.h
+_DEPS = ppmIO.h Pixel.h Fractals.h Primitives.h Color.h Image.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of all the object files (with .o endings)
-_COMMON = ppmIO.o Image.o Fractals.o
+_COMMON = ppmIO.o Fractals.o Image.o
 
 # convert them to point to the right place
 COMMON = $(patsubst %,$(ODIR)/%,$(_COMMON))
