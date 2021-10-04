@@ -13,64 +13,10 @@
 #include <math.h>
 #include <stdio.h>
 #include "Image.h"
-
-// Struct Definitions
-typedef struct
-{
-    /* 
-    Point
-    --------------------------
-    The point structure describes a single point in R3. 
-    */
-    double val[4];
-} Point;
-
-typedef struct
-{
-    /* 
-    Line
-    --------------------------
-    The line structure describes a single line in R3. 
-    */
-    int zBuffer; // Whether or not to use z-buffer, should default to true
-    Point a; // Starting point
-    Point b; // End point
-} Line;
-
-typedef struct
-{
-    /* 
-    Circle
-    --------------------------
-    The circle structure describes a single circle in R3. 
-    */
-    double r; // Radius
-    Point c; // Center point
-} Circle;
-
-typedef struct
-{
-    /* 
-    Ellipse
-    --------------------------
-    The ellipse structure describes a single ellipse in R3. 
-    */
-    double ra, rb; // Major and Minor axis radii
-    Point c; // Center point
-    double a; // Angle of major axis relative to X-axis
-} Ellipse;
-
-typedef struct
-{
-    /* 
-    Polyline
-    --------------------------
-    The polyline structure describes a single polyline in R3. 
-    */
-    int zBuffer; // Whether or not to use z-buffer, should default to true 
-    int numVertex; // Number of vertices
-    Point *vertex; // Vertex information
-} Polyline;
+#include "Line.h"
+#include "Circle.h"
+#include "Ellipse.h"
+#include "Polyline.h"
 
 // Inline Methods
 
@@ -85,8 +31,8 @@ inline void point_drawf(Point *p, Image *src, FPixel c){ image_setf(src, p->val[
 inline void point_print(Point *p, FILE *fp){ for (int i = 0; i < sizeof p->val / sizeof p->val[0]; i++){ fprintf(fp, "%.3f", p->val[i]); } }
 
 // Line
-inline void line_set2D(Line *l, double x0, double y0, double x1, double y1){ l->a = (Point){.val = {x0, y0}}; l->b = (Point){.val = {x1, y1}}; }
-inline void line_set(Line *l, Point ta, Point tb){ l->a = ta; l->b = tb; }
+inline void line_set2D(Line *l, double x0, double y0, double x1, double y1){ l->a.val[0] = x0; l->a.val[1] = y0; l->b.val[0] = x1; l->b.val[1]  = y1; }
+inline void line_set(Line *l, Point ta, Point tb){ l->a.val[0] = ta.val[0]; l->a.val[1] = ta.val[1]; l->b.val[0] = tb.val[0]; l->b.val[1] = tb.val[1]; }
 inline void line_zBuffer(Line *l, int flag){ l->zBuffer = flag; }
 inline void line_normalize(Line *l){ l->a.val[0] = l->a.val[0] / l->a.val[3]; l->b.val[0] = l->b.val[0] / l->b.val[3]; l->a.val[1] = l->a.val[1] / l->a.val[3]; l->b.val[1] = l->b.val[1] / l->b.val[3]; }
 inline void line_copy(Line *to, Line *from){ to->a = from->a; to->b = from->b; to->zBuffer = from->zBuffer; }
@@ -231,7 +177,7 @@ inline void line_draw3D(Line *l, Image *src, Color c)
 }
 
 // Circle
-inline void circle_set(Circle *c, Point tc, double tr){ c->c = tc; c->r = tr; }
+inline void circle_set(Circle *c, Point tc, double tr){ c->c.val[0] = tc.val[0]; c->c.val[1] = tc.val[1]; c->r = tr; }
 inline void circle_place_pixels_bresenham(Image *src, int x, int y, Circle* c, Color p)
 {
     int xc = trunc(c->c.val[0]);
