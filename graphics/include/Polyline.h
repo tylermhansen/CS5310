@@ -7,7 +7,7 @@ CS5310 @ Roux Institute Fall 2021
 
 #ifndef POLYLINE_H
 
-#define POLYLINEH
+#define POLYLINE_H
 
 // Include Dependencies
 #include "Point.h"

@@ -7,7 +7,7 @@ CS5310 @ Roux Institute Fall 2021
 
 #ifndef COLOR_H
 
-#define COLORH
+#define COLOR_H
 
 // Include Dependencies
 

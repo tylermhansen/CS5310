@@ -12,6 +12,7 @@
 // Include Dependencies
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "Image.h"
 #include "Line.h"
 #include "Circle.h"
@@ -21,62 +22,147 @@
 // Inline Methods
 
 // Point
-inline void point_set2D(Point *p, double x, double y){ p->val[0] = x; p->val[1] = y; p->val[2] = 0.0; p->val[3] = 1.0; }
-inline void point_set3D(Point *p, double x, double y, double z){ p->val[0] = x; p->val[1] = y; p->val[2] = z; p->val[3] = 1.0; }
-inline void point_set(Point *p, double x, double y, double z, double h){ p->val[0] = x; p->val[1] = y; p->val[2] = z; p->val[3] = h; }
-inline void point_normalize(Point *p) {p->val[0] /= p->val[3]; p->val[1] /= p->val[3]; }
-inline void point_copy(Point *to, Point *from){ to->val[0] = from->val[0]; to->val[1] = from->val[1]; to->val[2] = from->val[2]; to->val[3] = from->val[3]; }
-inline void point_draw(Point *p, Image *src, Color c){ image_setColor(src, p->val[1], p->val[0], c); }
-inline void point_drawf(Point *p, Image *src, FPixel c){ image_setf(src, p->val[1], p->val[0], c); }
-inline void point_print(Point *p, FILE *fp){ for (int i = 0; i < sizeof p->val / sizeof p->val[0]; i++){ fprintf(fp, "%.3f", p->val[i]); } }
+extern inline void point_set2D(Point *p, double x, double y){ p->val[0] = x; p->val[1] = y; p->val[2] = 0.0; p->val[3] = 1.0; }
+extern inline void point_set3D(Point *p, double x, double y, double z){ p->val[0] = x; p->val[1] = y; p->val[2] = z; p->val[3] = 1.0; }
+extern inline void point_set(Point *p, double x, double y, double z, double h){ p->val[0] = x; p->val[1] = y; p->val[2] = z; p->val[3] = h; }
+extern inline void point_normalize(Point *p) {p->val[0] /= p->val[3]; p->val[1] /= p->val[3]; }
+extern inline void point_copy(Point *to, Point *from){ to->val[0] = from->val[0]; to->val[1] = from->val[1]; to->val[2] = from->val[2]; to->val[3] = from->val[3]; }
+extern inline void point_draw(Point *p, Image *src, Color c){ image_setColor(src, p->val[1], p->val[0], c); }
+extern inline void point_drawf(Point *p, Image *src, FPixel c){ image_setf(src, p->val[1], p->val[0], c); }
+extern inline void point_print(Point *p, FILE *fp){ for (int i = 0; i < sizeof p->val / sizeof p->val[0]; i++){ fprintf(fp, "%.3f", p->val[i]); } }
 
 // Line
-inline void line_set2D(Line *l, double x0, double y0, double x1, double y1){ l->a.val[0] = x0; l->a.val[1] = y0; l->b.val[0] = x1; l->b.val[1]  = y1; }
-inline void line_set(Line *l, Point ta, Point tb){ l->a.val[0] = ta.val[0]; l->a.val[1] = ta.val[1]; l->b.val[0] = tb.val[0]; l->b.val[1] = tb.val[1]; }
-inline void line_zBuffer(Line *l, int flag){ l->zBuffer = flag; }
-inline void line_normalize(Line *l){ l->a.val[0] = l->a.val[0] / l->a.val[3]; l->b.val[0] = l->b.val[0] / l->b.val[3]; l->a.val[1] = l->a.val[1] / l->a.val[3]; l->b.val[1] = l->b.val[1] / l->b.val[3]; }
-inline void line_copy(Line *to, Line *from){ to->a = from->a; to->b = from->b; to->zBuffer = from->zBuffer; }
-inline void line_draw(Line *l, Image *src, Color c)
+extern inline void line_set2D(Line *l, double x0, double y0, double x1, double y1){ l->a.val[0] = x0; l->a.val[1] = y0; l->b.val[0] = x1; l->b.val[1]  = y1; }
+extern inline void line_set(Line *l, Point ta, Point tb){ l->a.val[0] = ta.val[0]; l->a.val[1] = ta.val[1]; l->b.val[0] = tb.val[0]; l->b.val[1] = tb.val[1]; }
+extern inline void line_zBuffer(Line *l, int flag){ l->zBuffer = flag; }
+extern inline void line_normalize(Line *l){ l->a.val[0] = l->a.val[0] / l->a.val[3]; l->b.val[0] = l->b.val[0] / l->b.val[3]; l->a.val[1] = l->a.val[1] / l->a.val[3]; l->b.val[1] = l->b.val[1] / l->b.val[3]; }
+extern inline void line_copy(Line *to, Line *from){ to->a = from->a; to->b = from->b; to->zBuffer = from->zBuffer; }
+
+inline void first_fourth(Image* src, Color c, int x0, int y0, int x1, int y1)
 {
-    // Draws from lower left corner
-    int dx = trunc(l->a.val[0] - l->b.val[0]);
-    int dy = trunc(l->a.val[1] - l->b.val[1]);
+    int x = x0, y = y0, dx = x1 - x0, dy = y1 - y0, ys = 1; 
 
-    int p = 3 * dy - 2 * dx;
-    int x = trunc(l->b.val[0]);
-    int y = trunc(l->b.val[1]);
-
-    while(x < trunc(l->a.val[0]))
+    // First-Fourth Swap
+    if(dy < 0) 
     {
-        if (p > 0)
+        ys = -1; dy = -dy; 
+    } 
+
+    int e = 3 * dy - 2 * dx; 
+    for(int i = 0; i < dx; i++)
+    {
+        image_setColor(src, y, x, c);
+        while(e > 0)
         {
-            image_setColor(src, x, y, c);
-            y += 1;
-            p = p +  2 * dy - 2 * dx;
+            y += ys; 
+            e -= 2 * dx;
         }
-        else
-        {
-            image_setColor(src, x, y, c);
-            p = p +  2 * dy;
-        }
-        x += 1;
+        x++;
+        e += 2 * dy;
     }
 }
-inline void line_draw3D(Line *l, Image *src, Color c)
+
+inline void second_third(Image* src, Color c, int x0, int y0, int x1, int y1)
+{
+    int x = x0, y = y0, dx = x1 - x0, dy = y1 - y0, xs = 1; 
+
+    // Second-Third Swap
+    if(dx < 0) 
+    {
+        xs = -1; dx = -dx; 
+    } 
+
+    int e = 3 * dx - 2 * dy; 
+    for(int i = 0; i < dy; i++)
+    {
+        image_setColor(src, y, x, c);
+        while(e > 0)
+        {
+            x += xs; 
+            e -= 2 * dy;
+        }
+        y++;
+        e += 2 * dx;
+    }
+}
+
+inline void horizontal(Image* src, Color c, int x0, int y, int x1)
+{
+    for(int i = 0; i < x1 - x0; i++)
+    {
+        image_setColor(src, y, x0 + i, c);
+    }
+}
+
+inline void vertical(Image* src, Color c, int x, int y0, int y1)
+{
+    for(int i = 0; i < y1 - y0; i++)
+    {
+        image_setColor(src, y0 + i + 1, x, c);
+    }
+}
+
+extern inline void line_draw(Line *l, Image *src, Color c)
+{
+  int x0 = l->a.val[0], y0 = l->a.val[1], x1 = l->b.val[0], y1 = l->b.val[1]; 
+  if(abs(y1 - y0) < abs(x1 - x0)) {
+    if(x0 > x1)
+    {
+      if(y0 == y1) // Line is horizontal
+      { 
+        horizontal(src,c,x1,y0+1,x0);
+      } 
+      else 
+      { 
+        first_fourth(src,c,x1,y1,x0,y0); 
+      }
+    } 
+    else 
+    {
+      if(y0 == y1) // Line is horizontal
+      { 
+        horizontal(src,c,x0,y0,x1);
+      } 
+      else
+      { 
+        first_fourth(src,c,x0,y0,x1,y1); 
+      }
+    }
+  } 
+  else
+  {
+    if(y0 > y1) 
+    {
+      if(x0 == x1) // Line is vertical
+      {
+        vertical(src,c,x0-1,y1,y0); 
+      } 
+      else 
+      {
+        second_third(src,c,x1,y1,x0,y0);
+      }
+    } 
+    else
+    {
+      if(x0 == x1) // Line is vertical
+      {
+        vertical(src,c,x0,y0,y1);
+      } 
+      else
+      {
+        second_third(src,c,x0,y0,x1,y1); 
+      }
+    }
+  }
+}
+extern inline void line_draw3D(Line *l, Image *src, Color c)
 {
     // Draws from lower left corner
-    int dx = trunc(l->a.val[0] - l->b.val[0]);
-    int dy = trunc(l->a.val[1] - l->b.val[1]);
-    int dz = trunc(l->a.val[2] - l->b.val[2]);
+    int dx = trunc(l->a.val[0] - l->b.val[0]), dy= trunc(l->a.val[1] - l->b.val[1]), dz = trunc(l->a.val[2] - l->b.val[2]);
 
     int p1, p2;
 
-    int x1 = trunc(l->b.val[0]);
-    int y1 = trunc(l->b.val[1]);
-    int z1 = trunc(l->b.val[2]);
-    int x2 = trunc(l->a.val[0]);
-    int y2 = trunc(l->a.val[1]);
-    int z2 = trunc(l->a.val[2]);
+    int x1 = trunc(l->b.val[0]), y1 = trunc(l->b.val[1]), y2 = trunc(l->b.val[2]), x2 = trunc(l->a.val[0]), z1 = trunc(l->a.val[1]), z2 = trunc(l->a.val[2]);
 
     // X axis is driving, y axis is driving, z axis is driving 
     int xs, ys, zs;
@@ -177,8 +263,8 @@ inline void line_draw3D(Line *l, Image *src, Color c)
 }
 
 // Circle
-inline void circle_set(Circle *c, Point tc, double tr){ c->c.val[0] = tc.val[0]; c->c.val[1] = tc.val[1]; c->r = tr; }
-inline void circle_place_pixels_bresenham(Image *src, int x, int y, Circle* c, Color p)
+extern inline void circle_set(Circle *c, Point tc, double tr){ c->c.val[0] = tc.val[0]; c->c.val[1] = tc.val[1]; c->r = tr; }
+extern inline void circle_place_pixels_bresenham(Image *src, int x, int y, Circle* c, Color p)
 {
     int xc = trunc(c->c.val[0]);
     int yc = trunc(c->c.val[1]);
@@ -192,7 +278,7 @@ inline void circle_place_pixels_bresenham(Image *src, int x, int y, Circle* c, C
     image_setColor(src, xc-y, yc-x, p);
 }
  
-inline void circle_draw_bresenham(Circle *c, Image *src, Color p)
+extern inline void circle_draw_bresenham(Circle *c, Image *src, Color p)
 { 
     int x = 0, y = c->r; 
     int d = 3 - 2 * c->r;
@@ -212,7 +298,7 @@ inline void circle_draw_bresenham(Circle *c, Image *src, Color p)
     
 }
 
-inline void circle_place_pixels_midpoint(Image *src, int x, int y, Circle* c, Color p)
+extern inline void circle_place_pixels_midpoint(Image *src, int x, int y, Circle* c, Color p)
 {
     int xc = trunc(c->c.val[0]);
     int yc = trunc(c->c.val[1]);
@@ -232,7 +318,7 @@ inline void circle_place_pixels_midpoint(Image *src, int x, int y, Circle* c, Co
     }
 }
 
-inline void circle_draw_midpoint(Circle *c, Image *src, Color p)
+extern inline void circle_draw(Circle *c, Image *src, Color p)
 {
     int x = c->r, y = 0;
 
@@ -262,7 +348,7 @@ inline void circle_draw_midpoint(Circle *c, Image *src, Color p)
     }
 }
 
-inline void circle_drawFill(Circle *c, Image *src, Color p)
+extern inline void circle_drawFill(Circle *c, Image *src, Color p)
 {
 
 }

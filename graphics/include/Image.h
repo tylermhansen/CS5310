@@ -6,7 +6,7 @@ CS5310 @ Roux Institute Fall 2021
 
 #ifndef IMAGE_H
 
-#define IMAGEH
+#define IMAGE_H
 
 // Include Dependencies
 #include "Pixel.h"

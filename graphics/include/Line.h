@@ -7,7 +7,7 @@ CS5310 @ Roux Institute Fall 2021
 
 #ifndef LINE_H
 
-#define LINEH
+#define LINE_H
 
 // Include Dependencies
 #include "Point.h"

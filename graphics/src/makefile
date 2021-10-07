@@ -32,10 +32,10 @@ _DEPS = ppmIO.h Image.h Pixel.h Color.h Primitives.h
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
 
 # put a list of the executables here
-EXECUTABLES = ppmtest lab1 createmask mergeimages imagetest mandeltest julia mandelbrot test3d
+EXECUTABLES = ppmtest lab1 createmask mergeimages imagetest mandeltest julia mandelbrot test3a test3b test3c test3d
 
 # put a list of all the object files here for all executables (with .o endings)
-_OBJ = tiffmain.o ppmmain.o lab1.o createmask.o mergeimages.o imagetest.o mandeltest.o julia.o mandelbrot.o test3d.o
+_OBJ = tiffmain.o ppmmain.o lab1.o createmask.o mergeimages.o imagetest.o mandeltest.o julia.o mandelbrot.o test3a.o test3b.o test3c.o test3d.o
 
 # convert them to point to the right place
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))

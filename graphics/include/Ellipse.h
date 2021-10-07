@@ -7,7 +7,7 @@ CS5310 @ Roux Institute Fall 2021
 
 #ifndef ELLIPSE_H
 
-#define ELLIPSEH
+#define ELLIPSE_H
 
 // Include Dependencies
 #include "Point.h"
@@ -16,12 +16,13 @@ CS5310 @ Roux Institute Fall 2021
 typedef struct
 {
     /* 
-    Circle
+    Ellipse
     --------------------------
-    The circle structure describes a single circle in R3. 
+    The ellipse structure describes an ellipse in R3. 
     */
-    double r; // Radius
-    Point c; // Center point
-} Circle;
+    double ra, rb; // Radii
+    Point c; // Center 
+    double a; // Angle of major axis relative to X axis
+} Ellipse;
 
 #endif // ELLIPSE_H

@@ -7,7 +7,7 @@ CS5310 @ Roux Institute Fall 2021
 
 #ifndef POINT_H
 
-#define POINTH
+#define POINT_H
 
 // Include Dependencies
 
