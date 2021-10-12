@@ -26,7 +26,7 @@ LIBS = -lm -limageIO
 LFLAGS = -L$(LIBDIR) -L/opt/local/lib
 
 # put all of the relevant include files here
-_DEPS = ppmIO.h Image.h Pixel.h Color.h Primitives.h
+_DEPS = ppmIO.h Pixel.h Image.h Color.h Primitives.h
 
 # convert them to point to the right place
 DEPS = $(patsubst %,$(INCDIR)/%,$(_DEPS))
@@ -79,6 +79,15 @@ julia: $(ODIR)/julia.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 mandelbrot: $(ODIR)/mandelbrot.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test3a: $(ODIR)/test3a.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test3b: $(ODIR)/test3b.o
+	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
+
+test3c: $(ODIR)/test3c.o
 	$(CC) -o $(BINDIR)/$@ $^ $(LFLAGS) $(LIBS)
 
 test3d: $(ODIR)/test3d.o
